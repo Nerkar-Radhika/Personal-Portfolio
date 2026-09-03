@@ -1,0 +1,148 @@
+{
+  "name": "Java Deep Packet Inspection (DPI) Engine",
+  "category": "Network Security / Computer Networks",
+  "short_description": "A Java-based Deep Packet Inspection engine that captures live network traffic, analyzes packets across multiple protocol layers, classifies traffic, manages network flows, detects suspicious activities, calculates traffic statistics, identifies top talkers, and generates CSV, HTML dashboard, and PDF reports.",
+  "problem_statement": "Traditional network monitoring tools may provide traffic statistics without giving a clear view of individual packets, protocols, flows, and suspicious activities. This project aims to build a modular Java-based DPI engine that can inspect live network traffic, extract useful packet-level information, identify network behavior, detect potential port scans, and present the collected information through structured reports and a dashboard.",
+  "objective": "To develop a practical network traffic analysis and security monitoring application using Java that captures live packets, parses network protocols, tracks flows, detects suspicious scanning behavior, calculates traffic statistics, identifies top communicating hosts, and generates human-readable reports.",
+
+  "dataset": {
+    "name": "Live Network Traffic",
+    "size": "Varies depending on the packet capture session",
+    "source": "Captured from the local network interface using Pcap4J",
+    "details": "The project does not rely on a fixed machine-learning dataset. It processes live network packets captured from a selected network interface. During testing, the engine analyzed traffic containing IPv4, TCP, UDP, HTTP, HTTPS, LLMNR, NetBIOS and other network traffic."
+  },
+
+  "features": [
+    {
+      "name": "Live Packet Capture",
+      "purpose": "Captures network packets from a selected network interface using Pcap4J."
+    },
+    {
+      "name": "Ethernet Parsing",
+      "purpose": "Analyzes Ethernet frames and identifies the Ethernet type, such as IPv4, IPv6 or ARP."
+    },
+    {
+      "name": "IPv4 Parsing",
+      "purpose": "Extracts IPv4 source and destination addresses and analyzes IPv4 traffic."
+    },
+    {
+      "name": "TCP Parsing",
+      "purpose": "Extracts TCP source port, destination port and TCP-related information from packets."
+    },
+    {
+      "name": "UDP Parsing",
+      "purpose": "Analyzes UDP packets and extracts source and destination port information."
+    },
+    {
+      "name": "TCP Flag Analysis",
+      "purpose": "Analyzes TCP flags such as SYN, FIN, ACK, PSH and other combinations for traffic classification and security detection."
+    },
+    {
+      "name": "HTTP Parsing",
+      "purpose": "Identifies HTTP requests and extracts information such as method, path, HTTP version, host and user-agent when the payload is available."
+    },
+    {
+      "name": "DNS Parsing",
+      "purpose": "Provides DNS protocol analysis and supports identification of DNS-related traffic."
+    },
+    {
+      "name": "Traffic Classification",
+      "purpose": "Classifies captured traffic into application or service categories such as HTTP, HTTPS, DNS, LLMNR and NetBIOS."
+    },
+    {
+      "name": "Flow Management",
+      "purpose": "Groups packets into network flows using communication endpoints and tracks packet count, bytes, first-seen time and last-seen time."
+    },
+    {
+      "name": "Port Scan Detection",
+      "purpose": "Detects potentially suspicious scanning behavior based on TCP flag patterns and connection activity."
+    },
+    {
+      "name": "Top Talker Detection",
+      "purpose": "Identifies hosts responsible for the highest amount of observed network traffic."
+    },
+    {
+      "name": "Traffic Statistics",
+      "purpose": "Calculates total packets, bytes, TCP flows, UDP flows and application-level traffic statistics."
+    },
+    {
+      "name": "CSV Reporting",
+      "purpose": "Exports flow-level information such as source IP, destination IP, ports, protocol, service, packets, bytes and duration."
+    },
+    {
+      "name": "HTML Dashboard",
+      "purpose": "Provides an interactive dashboard containing threat statistics, flow summaries, charts and a searchable flow table."
+    },
+    {
+      "name": "PDF Reporting",
+      "purpose": "Generates a structured PDF report containing report timestamp, traffic summary, threat summary and flow details."
+    }
+  ],
+
+  "models": [],
+
+  "best_result": {
+    "metric": "Successful live traffic analysis and reporting",
+    "value": "Successfully captured and analyzed live packets and generated CSV, HTML and PDF reports",
+    "model": "Not applicable - this is a rule-based network security and packet analysis project"
+  },
+
+  "technology_stack": [
+    "Java",
+    "Maven",
+    "Pcap4J",
+    "OpenPDF",
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "Chart.js",
+    "Git",
+    "GitHub",
+    "Visual Studio Code"
+  ],
+
+  "challenges": [
+    "Understanding raw network packet structure and protocol layers",
+    "Capturing live packets correctly from the network interface",
+    "Parsing different packet types such as Ethernet, IPv4, TCP and UDP",
+    "Handling different TCP flag combinations",
+    "Designing a reliable network flow representation",
+    "Keeping dashboard, CSV and PDF statistics consistent",
+    "Implementing port scan detection logic",
+    "Generating a professional PDF report from collected network statistics",
+    "Debugging Maven and Java dependency issues",
+    "Managing generated reports without accidentally committing temporary build files to GitHub"
+  ],
+
+  "solutions": [
+    "Used Pcap4J to handle low-level packet capture and packet structures instead of manually processing raw bytes",
+    "Separated packet processing into modular parser classes for Ethernet, IPv4, TCP, UDP, HTTP and DNS",
+    "Created Flow and FlowManager components to maintain and aggregate communication flows",
+    "Created dedicated statistics classes to calculate packet, byte, protocol and host-level statistics",
+    "Implemented TCP flag analysis to identify patterns associated with SYN, FIN, NULL and XMAS scans",
+    "Created HostStatisticsManager to calculate traffic contribution and identify the top talker",
+    "Used a centralized ReportGenerator to generate CSV and HTML reports from the collected flow information",
+    "Used OpenPDF through a dedicated PDFReportGenerator for structured PDF reports",
+    "Used Maven to manage project dependencies and build the Java application",
+    "Used Git and GitHub to version-control the source code while excluding generated build files and temporary files through .gitignore"
+  ],
+
+  "future_improvements": [
+    "Add full IPv6 deep packet inspection",
+    "Improve encrypted HTTPS traffic analysis using metadata and TLS information",
+    "Add DNS query and response-level analysis",
+    "Implement real-time dashboard updates",
+    "Add more advanced intrusion detection rules",
+    "Add DDoS and abnormal traffic detection",
+    "Add machine-learning-based anomaly detection",
+    "Add IP geolocation and traffic visualization",
+    "Add configurable security thresholds",
+    "Add email or real-time security alerts",
+    "Export reports in JSON format",
+    "Improve scalability for high-volume network traffic",
+    "Add automated unit and integration testing",
+    "Deploy the application as a production-ready network monitoring service"
+  ],
+
+  "my_contribution": "I designed and developed the Java Deep Packet Inspection project as a hands-on learning project. I worked on the packet capture workflow, protocol parsing, traffic classification, flow management, statistics collection, security detection, top-talker analysis and CSV/HTML/PDF report generation. I also handled Maven configuration, debugging, project organization, Git/GitHub version control and testing with live network traffic. During development, I used ChatGPT as a learning and debugging assistant to understand networking and Java concepts, troubleshoot implementation issues, and improve the project structure. I then implemented, tested and verified the functionality myself."
+}

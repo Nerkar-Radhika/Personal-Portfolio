@@ -1,0 +1,54 @@
+.project-window {
+  padding: 22px 24px;
+}
+
+.project-window h2 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.project-tagline {
+  font-size: 13px;
+  color: #9ba1ae;
+  margin-bottom: 16px;
+}
+
+.project-description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #d7d9e0;
+  margin-bottom: 18px;
+}
+
+.project-window h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #8b93ff;
+  margin-bottom: 8px;
+}
+
+.project-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.stack-chip {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(108, 142, 255, 0.14);
+  border: 1px solid rgba(108, 142, 255, 0.25);
+  color: #b7c3ff;
+}
+
+.project-notes {
+  list-style: disc;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #c7cad1;
+}

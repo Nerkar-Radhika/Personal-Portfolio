@@ -1,0 +1,155 @@
+{
+  "name": "MindVibe",
+  "category": "Machine Learning",
+  "short_description": "A multilingual voice-based psychological stress detection web application that analyzes speech signals from Indian speakers in Hindi, English and Marathi to classify stress levels in real time using a Stacking Ensemble machine learning model deployed via Streamlit.",
+  "problem_statement": "Traditional stress detection methods require expensive clinical tests, medical consultations and physical sensors making them inaccessible to most people. Existing ML models are trained on English-only acted emotion datasets recorded by American actors in controlled studio environments, causing them to fail completely on natural Indian speech due to domain shift. No existing system supports real-time multilingual stress detection in Hindi, English and Marathi through a simple web interface.",
+  "objective": "To develop an accurate, robust and multilingual voice-based psychological stress detection system using machine learning that works effectively on natural Indian speech in Hindi, English and Marathi, addresses gender and class imbalance in training data, benchmarks multiple ML algorithms systematically, and deploys as an interactive web application accessible without any physical sensors or medical equipment.",
+
+  "dataset": {
+    "name": "Phase 1: CREMA-D + TESS | Phase 2: Custom Senior Indian Dataset",
+    "size": "Phase 1: 16,670 balanced audio files | Phase 2: 5,056 multilingual audio files",
+    "source": "Phase 1: Kaggle (CREMA-D: 7,442 files, 91 actors, 6 emotions) + Kaggle (TESS: 2,800 files, 2 female actors, 7 emotions) | Phase 2: Custom recordings by senior students of YCCE Nagpur in Hindi, English and Marathi + 22 self-recorded voice samples with augmentation",
+    "details": "Emotion to stress label mapping: Stressed(1) = angry, fear, disgust, sad | Unstressed(0) = happy, neutral, surprise. Gender imbalance fixed via audio augmentation (noise injection, pitch shift, time stretch). Class imbalance fixed via same augmentation in Phase 1 and SMOTE in Phase 2. Phase 2 language distribution: Marathi 2375 files, Hindi 1406 files, English 1275 files. Female speakers: S3, S4, S6, S19, S30, OAF."
+  },
+
+  "features": [
+    {
+      "name": "MFCC (40 coefficients) + Delta MFCC + Delta2 MFCC",
+      "purpose": "Captures vocal tract shape, formant structure and voice quality. Delta captures rate of change of coefficients over time. Delta2 captures acceleration. Together provides 240 features representing static and dynamic cepstral information critical for emotion and stress classification."
+    },
+    {
+      "name": "Mel Spectrogram (128 bins)",
+      "purpose": "Represents frequency content of speech mapped to perceptual Mel scale aligning with human auditory perception. Captures how energy is distributed across frequency bands over time. Provides 256 features (mean + std of 128 bins)."
+    },
+    {
+      "name": "Zero Crossing Rate (ZCR)",
+      "purpose": "Measures how frequently the audio signal crosses zero amplitude. Higher ZCR indicates noisy or unvoiced speech. Stressed speech tends to have different ZCR patterns compared to calm speech. Contributes 2 features (mean + std)."
+    },
+    {
+      "name": "RMS Energy",
+      "purpose": "Measures the loudness or energy of the speech signal. Stressed voices tend to have higher energy and intensity. Contributes 2 features (mean + std)."
+    },
+    {
+      "name": "Chroma STFT (12 bins)",
+      "purpose": "Captures pitch class information and harmonic content of speech. Reflects tonal qualities that change under psychological stress. Contributes 24 features (mean + std of 12 chroma bins)."
+    },
+    {
+      "name": "Spectral Contrast (7 bands)",
+      "purpose": "Measures the difference in amplitude between spectral peaks and valleys in sub-bands. Differentiates voiced and unvoiced speech segments which change under stress. Contributes 7 features."
+    },
+    {
+      "name": "Tonnetz (6 dimensions)",
+      "purpose": "Captures tonal centroid features representing harmonic relationships in the tonal space. Reflects changes in vocal harmony and tonality caused by stress. Contributes 24 features (mean + std of 6 dimensions)."
+    },
+    {
+      "name": "Spectral Rolloff",
+      "purpose": "Frequency below which a specified percentage of total spectral energy is contained. Indicates brightness of the sound. Stressed speech has different rolloff characteristics. Contributes 2 features (mean + std)."
+    },
+    {
+      "name": "Spectral Bandwidth",
+      "purpose": "Measures the width of the spectral band. Captures how spread out the frequencies are in the signal. Changes with emotional state of the speaker. Contributes 2 features (mean + std)."
+    },
+    {
+      "name": "Gender Encoding (Binary)",
+      "purpose": "Novel demographic feature not used in any reference paper. Binary value encoding speaker gender as Female=1 and Male=0. Added as explicit feature to help model account for fundamental frequency differences between male and female voices. Contributes 1 feature."
+    }
+  ],
+
+  "models": [
+    {
+      "name": "Logistic Regression",
+      "result": "70.21% accuracy on Phase 1 CREMA-D+TESS dataset. Used as linear baseline. Fast and interpretable but insufficient for complex non-linear speech patterns."
+    },
+    {
+      "name": "Decision Tree",
+      "result": "73.81% accuracy on Phase 1. Non-linear baseline. Simple to interpret but prone to overfitting on high dimensional speech features."
+    },
+    {
+      "name": "SVM (RBF Kernel)",
+      "result": "81.22% accuracy on Phase 1. C=100, gamma=scale, class_weight=balanced. Effective in high dimensional spaces. Strong base model for stacking ensemble."
+    },
+    {
+      "name": "Random Forest",
+      "result": "83.03% accuracy on Phase 1. n_estimators=300, max_depth=15, class_weight=balanced. Bagging ensemble reducing overfitting. Strong base model for stacking."
+    },
+    {
+      "name": "Voting Ensemble",
+      "result": "84.88% accuracy on Phase 1. Hard voting combination of RF, SVM and XGBoost. Better than individual models but weaker than stacking due to equal weight assignment."
+    },
+    {
+      "name": "XGBoost (Tuned)",
+      "result": "86.51% accuracy on Phase 1 after GridSearchCV tuning with n_estimators=400, max_depth=7, learning_rate=0.1, subsample=0.8, colsample_bytree=0.8. Gradient boosting corrects errors sequentially."
+    },
+    {
+      "name": "Stacking Ensemble",
+      "result": "87.51% on Phase 1 CREMA-D+TESS | 96.23% on Phase 2 Custom Dataset | 97.42% with 5-Fold Cross Validation on Phase 2. Base learners: XGBoost + Random Forest + SVM. Meta learner: Logistic Regression with 3-fold CV. Best model across all experiments. Language wise: Hindi 97.25%, Marathi 96.76%, English 94.29%."
+    }
+  ],
+
+  "best_result": {
+    "metric": "Accuracy",
+    "value": "97.42%",
+    "model": "Stacking Ensemble (XGBoost + Random Forest + SVM as base learners with Logistic Regression as meta learner) with 5-Fold Stratified Cross Validation on Phase 2 Custom Multilingual Indian Dataset of 5,056 audio files in Hindi, English and Marathi. Optimal decision threshold: 0.35. No overfitting: training accuracy 99.98%, testing accuracy 97.42%, gap only 2.56%."
+  },
+
+  "technology_stack": [
+    "Python 3.10",
+    "Google Colab (development platform)",
+    "Google Drive (dataset and model storage)",
+    "Librosa 0.10.x (audio feature extraction)",
+    "Soundfile 0.12.x (audio augmentation saving)",
+    "NumPy 1.24.x (array operations)",
+    "Pandas 2.0.x (data management and CSV handling)",
+    "Scikit-learn 1.3.x (ML algorithms, SelectKBest, StandardScaler, StratifiedKFold, SMOTE)",
+    "XGBoost 1.7.x (gradient boosting classifier)",
+    "Imbalanced-learn 0.11.x (SMOTE oversampling)",
+    "Joblib 1.3.x (model serialization - pkl files)",
+    "Matplotlib 3.7.x (visualizations)",
+    "Seaborn 0.12.x (confusion matrix and statistical plots)",
+    "Streamlit 1.28.x (web application UI framework)",
+    "audio-recorder-streamlit 0.0.8 (browser microphone recording)",
+    "pyngrok 6.x (Colab to browser tunnel for live demo)",
+    "GitHub (code repository - Nerkar-Radhika)"
+  ],
+
+  "challenges": [
+    "Gender imbalance in CREMA-D+TESS: Female 6,312 vs Male 3,930 causing biased predictions towards female vocal patterns",
+    "Class imbalance after emotion to stress label mapping: Stressed 8,335 vs Unstressed 4,089 causing model bias towards stressed class",
+    "Domain shift problem: Model trained on American studio acted speech completely failed on natural Indian speech, predicting 98.2% unstressed probability for genuinely angry Indian voices",
+    "Speaker dependence: Model worked well on voices similar to training speakers but poorly on new speakers with different vocal characteristics",
+    "Feature extraction time: Processing 5,056 audio files took 25-35 minutes per run in Google Colab",
+    "ngrok 403 Forbidden error: pyngrok auto-download of binary was blocked requiring manual workaround",
+    "Empty features.csv: Previous incomplete feature extraction left empty file causing EmptyDataError on reload",
+    "Localtunnel TypeError: Static JS files failing to load through tunnel due to CORS issues",
+    "Male over-augmentation: After augmenting male data, male count jumped from 632 to 2,528 creating reverse gender imbalance requiring female re-augmentation",
+    "Real world voice prediction: Even after Phase 2 custom dataset, real world natural voice stress prediction reached only 50% accuracy due to remaining speaker dependence"
+  ],
+
+  "solutions": [
+    "Gender imbalance fixed by audio augmentation of male speakers using noise injection (Gaussian noise amplitude 0.005), pitch shifting (+/-2 semitones) and time stretching (rate 0.85-1.15x) bringing male count to match female",
+    "Class imbalance fixed using same three augmentation techniques on unstressed class in Phase 1 and SMOTE synthetic oversampling in Phase 2 feature space",
+    "Domain shift partially addressed by switching from CREMA-D+TESS to custom dataset of natural Indian speaker recordings in Hindi, English and Marathi improving stressed probability from 1.8% to 25-50%",
+    "Speaker dependence partially fixed by adding 22 self-recorded voice samples with augmentation generating approximately 88 additional files representative of real world voices",
+    "Feature extraction speed optimized by auto-skip logic checking if features.csv already exists in Drive before re-extracting saving 25+ minutes on reruns",
+    "ngrok fixed by using simple pyngrok.set_auth_token() before connect() instead of manual binary download",
+    "Empty CSV fixed by checking file size before loading and deleting empty file to force fresh extraction",
+    "Localtunnel CORS fixed by adding --server.enableCORS false and --server.enableXsrfProtection false flags to Streamlit launch command",
+    "Male over-augmentation fixed by running female augmentation loop to generate sufficient female files to match male count of 2,528 bringing total to 5,056 balanced files",
+    "Threshold optimization performed testing values from 0.30 to 0.65 finding optimal threshold 0.35 improving accuracy to 97.42% with 5-Fold CV"
+  ],
+
+  "future_improvements": [
+    "CNN + BiLSTM deep learning architecture for speaker independent feature learning targeting 97-99% accuracy",
+    "Expand dataset to 10,000+ files including Kathbath Indian speech dataset covering more diverse speakers and recording environments",
+    "Multi-level stress classification extending binary stressed/calm to three levels: Low, Mild and High stress",
+    "Cortisol level verified real stress labels replacing emotion-based labeling with medically validated physiological stress measurements",
+    "SHAP explainability showing which acoustic features contributed most to each prediction making model transparent for clinical use",
+    "Permanent Streamlit Community Cloud deployment eliminating Google Colab and ngrok dependency for 24/7 public access",
+    "Additional Indian language support including Tamil, Telugu, Bengali, Kannada and Gujarati",
+    "Mobile application development for Android and iOS for everyday stress monitoring",
+    "Real time continuous stress monitoring during phone calls and online meetings using streaming audio",
+    "Transfer learning and domain adaptation for truly speaker independent models working on any new speaker without retraining"
+  ],
+
+  "my_contribution": "Led the complete ML pipeline development including dataset collection and combination of CREMA-D and TESS, identified and fixed gender imbalance and class imbalance through audio augmentation, designed and implemented the 560-feature extraction pipeline using Librosa covering MFCC, Delta MFCC, Mel Spectrogram, ZCR, RMS, Chroma, Spectral Contrast, Tonnetz, Rolloff, Bandwidth and novel gender encoding, benchmarked 6 ML algorithms systematically, built and tuned the Stacking Ensemble model achieving 97.42% accuracy with 5-Fold Cross Validation, discovered and documented the domain shift problem as a novel research finding through real world voice testing, collected and integrated custom multilingual dataset in Hindi English and Marathi, added 22 personal voice recordings to improve real world prediction, developed and deployed the MindVibe Streamlit web application with upload and live recording modes, performed threshold optimization identifying 0.35 as optimal decision boundary, and authored the complete project report and presentation."
+}

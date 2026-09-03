@@ -1,0 +1,26 @@
+.wallpaper {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 75% 25%, rgba(80, 110, 220, 0.55), transparent 60%),
+    radial-gradient(ellipse 55% 60% at 60% 55%, rgba(50, 80, 200, 0.6), transparent 65%),
+    radial-gradient(ellipse 70% 55% at 30% 80%, rgba(140, 165, 235, 0.5), transparent 60%),
+    linear-gradient(160deg, #cfe0f5 0%, #a9c2ec 45%, #6f8fdc 100%);
+  overflow: hidden;
+}
+
+.wallpaper::before {
+  content: "";
+  position: absolute;
+  inset: -10%;
+  background:
+    radial-gradient(ellipse 40% 30% at 65% 40%, rgba(255, 255, 255, 0.35), transparent 70%),
+    radial-gradient(ellipse 35% 25% at 40% 65%, rgba(255, 255, 255, 0.2), transparent 70%);
+  filter: blur(30px);
+}
+
+.network-bg {
+  position: absolute;
+  inset: 0;
+}
