@@ -75,6 +75,8 @@ class Resume(BaseModel):
     name: str | None = None
     email: str | None = None
     phone: str | None = None
+    linkedin: str | None = None
+    github: str | None = None
 
     total_experience_years: float | None = None
 
